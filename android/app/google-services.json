@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1030487091811",
+    "project_id": "portfolio-app-68b2f",
+    "storage_bucket": "portfolio-app-68b2f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030487091811:android:76914bd5c89366806d6656",
+        "android_client_info": {
+          "package_name": "com.nabeer.portoflio"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUrGALLJc7eu7n4qQK4m7F8sOC8IUhhOs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
