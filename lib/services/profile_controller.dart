@@ -50,10 +50,15 @@ class ProfileController extends GetxController {
   // Logout function using GetX navigation
   Future<void> logout() async {
     try {
-      await auth.signOut();
-      Get.offAll(() => LoginScreen()); // Navigate to LoginScreen
+      isLoading.value = true;
+      
+       Future.delayed(Duration(seconds: 2),() async{await auth.signOut();  Get.offAll(() => LoginScreen());});
+      // // Navigate to LoginScreen
     } on FirebaseAuthException catch (e) {
       print("Error during logout: ${e.code}");
+    }
+    finally {
+      isLoading.value = false;
     }
   }
 }

@@ -15,7 +15,10 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xffF5F5F5),
-      body: SafeArea(
+      body:Obx((){
+        return  controller.isLoading.value
+                ? Center(child: CustomLoader(size: 60,))
+                : SafeArea(
         child: Stack(
           children: [
             // Animated Gradient Background
@@ -94,7 +97,8 @@ class ProfileScreen extends StatelessWidget {
             ),
           ],
         ),
-      ),
+      );
+      })
     );
   }
 }
