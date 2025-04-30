@@ -5,11 +5,14 @@ class HomeCardWidget extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String rating;
+  final Function() ontap;
   const HomeCardWidget(
       {super.key,
       required this.imageUrl,
       required this.title,
-      required this.rating});
+      required this.rating,
+      required this.ontap
+      });
 
   @override
   Widget build(BuildContext context) {

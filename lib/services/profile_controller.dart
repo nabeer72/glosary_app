@@ -19,8 +19,6 @@ class ProfileController extends GetxController {
     super.onInit();
     getUserInfo();
   }
-
-  // Get user information from Firestore
   void getUserInfo() async {
     try {
       isLoading.value = true;
