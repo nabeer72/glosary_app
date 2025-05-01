@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:portoflio/Models/grocery_model.dart';
 
 class CartWidget extends StatelessWidget {
-  const CartWidget({super.key});
+  final Items items;
+  final Function() onDelete;
+
+  const CartWidget({super.key, required this.items, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +18,8 @@ class CartWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                Image.asset(
-                  "images/splash_image.png",
+                Image.network(
+                 "https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=2048x2048&w=is&k=20&c=HuL0PWV7DOxpHzlHLMZfWGvMpmpA05gYoc6XS6HkX3Y=",
                   height: 60,
                   width: 60,
                 ),
@@ -26,12 +30,12 @@ class CartWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Product Name",
+                      items.name,
                       style: GoogleFonts.poppins(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "Product Name",
+                      items.descritpion,
                       style: GoogleFonts.poppins(
                           fontSize: 16, fontWeight: FontWeight.w300),
                     )
@@ -39,7 +43,22 @@ class CartWidget extends StatelessWidget {
                 ),
               ],
             ),
-            Icon(Icons.delete),
+            InkWell
+             (
+              onTap: onDelete,
+              child: Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+              ),
+            ),
           ],
         ),
       ),
