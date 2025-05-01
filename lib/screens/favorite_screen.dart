@@ -1,74 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:portoflio/Models/grocery_model.dart';
+import 'package:portoflio/services/favorite_controller.dart';
 import 'package:portoflio/widgets/favorite_card_widget.dart';
 import 'package:portoflio/widgets/custom_loader.dart';
+class FavoriteScreen extends StatelessWidget {
+  FavoriteScreen({super.key});
 
-class FavoriteScreen extends StatefulWidget {
-  const FavoriteScreen({super.key});
-
-  @override
-  State<FavoriteScreen> createState() => _FavoriteScreenState();
-}
-
-class _FavoriteScreenState extends State<FavoriteScreen> {
-  var firestore = FirebaseFirestore.instance;
-  var auth = FirebaseAuth.instance;
-  var isLoading = false.obs;
-  var inWishList = false.obs;
-
-  late Items item;
-
-  Stream<List<Items>> getWishListItems() {
-    return firestore
-        .collection('Users')
-        .doc(auth.currentUser!.uid)
-        .collection("wishList")
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Items.fromMap(doc.data())).toList());
-  }
-
-  Future<void> deleteWishListItem(String productId) async {
-    try {
-      await firestore
-          .collection("Users")
-          .doc(auth.currentUser!.uid)
-          .collection('wishList')
-          .doc(productId)
-          .delete();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
-   Future<void> addToCart() async {
-    isLoading.value = true;
-    try {
-      await firestore
-          .collection("Users")
-          .doc(auth.currentUser!.uid)
-          .collection('cartItems')
-          .doc(item.productId)
-          .set(item.toJson());
-      Get.snackbar("Success", "Item added to cart");
-
-         await firestore
-        .collection("Users")
-        .doc(auth.currentUser!.uid)
-        .collection('wishList')
-        .doc(item.productId)
-        .delete();
-
-    Get.snackbar("Success", "Item moved to cart");
-    } catch (e) {
-      Get.snackbar("Error", e.toString());
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  final FavoriteController controller = Get.put(FavoriteController());
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +18,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: StreamBuilder<List<Items>>(
-          stream: getWishListItems(),
+          stream: controller.getWishListItems(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CustomLoader());
@@ -95,23 +34,29 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
               );
             }
             final wishListItems = snapshot.data!;
-            return ListView.builder(
-              itemCount: wishListItems.length,
-              itemBuilder: (context, index) {
-                var item = wishListItems[index];
-                return FavoriteCardWidget(
-                  items: item,
-                  onDelete: () {
-                    deleteWishListItem(item.productId);
-                  },
-                  addToCart: () {
-                    this.item = item; // Set the item to be added to cart
-                    addToCart(); // Call the addToCart method
-                  },
-
-                );
-              },
-            );
+            return Obx(() {
+              return Stack(
+                children: [
+                  ListView.builder(
+                    itemCount: wishListItems.length,
+                    itemBuilder: (context, index) {
+                      var item = wishListItems[index];
+                      return FavoriteCardWidget(
+                        items: item,
+                        onDelete: () {
+                          controller.deleteWishListItem(item.productId);
+                        },
+                        addToCart: () {
+                          controller.addToCart(item);
+                        },
+                      );
+                    },
+                  ),
+                  if (controller.isLoading.value)
+                    const Center(child: CustomLoader()), // Show loader when busy
+                ],
+              );
+            });
           },
         ),
       ),

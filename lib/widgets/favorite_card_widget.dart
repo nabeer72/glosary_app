@@ -22,8 +22,8 @@ class FavoriteCardWidget extends StatelessWidget {
           children: [
             Row(
               children: [
-                Image.asset(
-                  "images/splash_image.png",
+                Image.network(
+                  "https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=2048x2048&w=is&k=20&c=HuL0PWV7DOxpHzlHLMZfWGvMpmpA05gYoc6XS6HkX3Y=",
                   height: 60,
                   width: 60,
                 ),
@@ -33,12 +33,12 @@ class FavoriteCardWidget extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      "Product Name",
+                      items.name,
                       style: GoogleFonts.poppins(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "Product Name",
+                      items.descritpion,
                       style: GoogleFonts.poppins(
                           fontSize: 16, fontWeight: FontWeight.w300),
                     )
