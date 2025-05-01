@@ -20,9 +20,12 @@ class ProductDetailScreen extends StatelessWidget {
       appBar: AppBar(
         leading: InkWell(
           onTap: () => Get.back(),
-          child: Icon(Icons.arrow_back_ios),
+          child: const Icon(Icons.arrow_back_ios_new_rounded),
         ),
-        title: Text("Product Detail"),
+        title: const Text(
+          "Product Detail",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
       ),
       body: Obx(() => controller.isLoading.value
@@ -30,8 +33,9 @@ class ProductDetailScreen extends StatelessWidget {
           : Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Image with heart icon on top-right without using Stack
+                  // Image with heart icon on top-right
                   Container(
                     height: 200,
                     width: double.infinity,
@@ -41,40 +45,32 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Row(
+                      child: Stack(
                         children: [
-                          Expanded(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(
-                                    "https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=2048x2048&w=is&k=20&c=HuL0PWV7DOxpHzlHLMZfWGvMpmpA05gYoc6XS6HkX3Y=",
-                                  ),
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              child: Align(
-                                alignment: Alignment.topRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: InkWell(
-                                    onTap: () {
-                                      controller.inWishList.value
-                                          ? controller.removeFromWishList()
-                                          : controller.addToWishList();
-                                    },
-                                    child: Obx(() => Icon(
-                                          Icons.favorite,
-                                          size: 28,
-                                          color: controller.inWishList.value
-                                              ? Colors.red
-                                              : Colors.white,
-                                        )),
-                                  ),
-                                ),
-                              ),
+                          Positioned.fill(
+                            child: Image.network(
+                              "https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=2048x2048&w=is&k=20&c=HuL0PWV7DOxpHzlHLMZfWGvMpmpA05gYoc6XS6HkX3Y=",
+                              fit: BoxFit.cover,
                             ),
                           ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: InkWell(
+                              onTap: () {
+                                controller.inWishList.value
+                                    ? controller.removeFromWishList()
+                                    : controller.addToWishList();
+                              },
+                              child: Obx(() => Icon(
+                                    Icons.favorite,
+                                    size: 28,
+                                    color: controller.inWishList.value
+                                        ? Colors.red
+                                        : Colors.white,
+                                  )),
+                            ),
+                          )
                         ],
                       ),
                     ),
@@ -82,40 +78,90 @@ class ProductDetailScreen extends StatelessWidget {
 
                   const SizedBox(height: 16),
 
-                  // Name and price
+                  // Name & Price Row
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        controller.item.name,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                      Expanded(
+                        child: Text(
+                          controller.item.name,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
                       ),
                       Text(
                         controller.item.price,
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
 
+                  const SizedBox(height: 16),
+
                   // Description
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      controller.item.descritpion,
-                      style: TextStyle(
-                          fontSize: 16, fontWeight: FontWeight.w400),
-                    ),
+                  Text(
+                    controller.item.descritpion,
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w400),
                   ),
 
-                  Spacer(),
+                  const SizedBox(height: 24),
 
-                  // Bottom row (Add to Cart & Buy Now)
+                  // Quantity Selector
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Quantity:",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(width: 20),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade400),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            InkWell(
+                              onTap: controller.decreaseQuantity,
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.remove, size: 22),
+                              ),
+                            ),
+                            Obx(() => Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
+                                  child: Text(
+                                    controller.quantity.value.toString(),
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                )),
+                            InkWell(
+                              onTap: controller.increaseQuantity,
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.add, size: 22),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const Spacer(),
+
+                  // Bottom Row: Add to Cart & Buy Now
                   Row(
                     children: [
                       InkWell(
-                        onTap: controller.addToCart,
+                        onTap: () {
+                          controller.addToCartWithQuantity();
+                        },
                         child: Container(
                           height: 60,
                           width: 60,
@@ -123,7 +169,7 @@ class ProductDetailScreen extends StatelessWidget {
                             border: Border.all(color: AppColors.fontColor),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Icon(Icons.shopping_cart_checkout),
                           ),
                         ),
@@ -132,7 +178,9 @@ class ProductDetailScreen extends StatelessWidget {
                       Expanded(
                         child: PrimaryButton(
                           title: "Buy Now",
-                          ontap: () {},
+                          ontap: () {
+                            // You can also pass the quantity here
+                          },
                         ),
                       )
                     ],

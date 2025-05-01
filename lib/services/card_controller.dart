@@ -35,6 +35,7 @@ class CartController extends GetxController {
       isLoading.value = false;
     }
   }
+  
 
   Future<void> deleteCartItem(String productId) async {
     try {

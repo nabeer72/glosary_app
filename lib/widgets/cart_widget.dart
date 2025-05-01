@@ -19,13 +19,11 @@ class CartWidget extends StatelessWidget {
             Row(
               children: [
                 Image.network(
-                 "https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=2048x2048&w=is&k=20&c=HuL0PWV7DOxpHzlHLMZfWGvMpmpA05gYoc6XS6HkX3Y=",
+                  "https://media.istockphoto.com/id/589415708/photo/fresh-fruits-and-vegetables.jpg?s=2048x2048&w=is&k=20&c=HuL0PWV7DOxpHzlHLMZfWGvMpmpA05gYoc6XS6HkX3Y=",
                   height: 60,
                   width: 60,
                 ),
-                const SizedBox(
-                  width: 10,
-                ),
+                const SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -34,17 +32,27 @@ class CartWidget extends StatelessWidget {
                       style: GoogleFonts.poppins(
                           fontSize: 16, fontWeight: FontWeight.bold),
                     ),
+                    const SizedBox(height: 4),
                     Text(
                       items.descritpion,
                       style: GoogleFonts.poppins(
-                          fontSize: 16, fontWeight: FontWeight.w300),
-                    )
+                          fontSize: 14, fontWeight: FontWeight.w300),
+                    ),
+                    const SizedBox(height: 4),
+
+                    // ✅ Show quantity here
+                    Text(
+                      'Quantity: ${items.quantity}',
+                      style: GoogleFonts.poppins(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.grey[600]),
+                    ),
                   ],
                 ),
               ],
             ),
-            InkWell
-             (
+            InkWell(
               onTap: onDelete,
               child: Container(
                 height: 30,
@@ -53,7 +61,7 @@ class CartWidget extends StatelessWidget {
                   color: Colors.red.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.delete,
                   color: Colors.red,
                 ),

@@ -4,13 +4,17 @@ class Items {
   final String descritpion;
   final String price;
   final String productId;
+  int quantity; // ✅ NEW: quantity field
+
   Items({
     required this.name,
     required this.imageUrl,
     required this.descritpion,
     required this.price,
     required this.productId,
+    this.quantity = 1, // ✅ default to 1 if not provided
   });
+
   Map<String, dynamic> toJson() {
     return {
       "name": name,
@@ -18,6 +22,7 @@ class Items {
       "descritpion": descritpion,
       "price": price,
       "productId": productId,
+      "quantity": quantity, // ✅ include quantity when saving
     };
   }
 
@@ -28,6 +33,7 @@ class Items {
       descritpion: map['descritpion'] ?? '',
       price: map['price'] ?? '',
       productId: map['productId'] ?? '',
+      quantity: map['quantity'] ?? 1, // ✅ fetch quantity (default to 1)
     );
   }
 }
