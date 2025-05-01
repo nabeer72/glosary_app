@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:portoflio/Models/grocery_model.dart';
 import 'package:portoflio/constants/colors.dart';
 
 
 class FavoriteCardWidget extends StatelessWidget {
-  const FavoriteCardWidget({super.key});
+
+  final Items items;
+  final Function() onDelete;
+  final Function() addToCart;
+
+  const FavoriteCardWidget({super.key, required this.items, required this.onDelete, required this.addToCart});
 
   @override
   Widget build(BuildContext context) {
@@ -42,16 +48,31 @@ class FavoriteCardWidget extends StatelessWidget {
             ),
             Column(
               children: [
-                Icon(
-                  Icons.delete,
-                  color: AppColors.primaryColor,
+                InkWell
+             (
+              onTap: onDelete,
+              child: Container(
+                height: 30,
+                width: 30,
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
                 ),
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                ),
+              ),
+            ),
                 SizedBox(
                   height: 10,
                 ),
-                Icon(
-                  Icons.shopping_cart,
-                  color: AppColors.primaryColor,
+                InkWell(
+                  onTap:addToCart ,
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: AppColors.primaryColor,
+                  ),
                 )
               ],
             )

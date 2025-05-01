@@ -22,6 +22,7 @@ class ProductDetailController extends GetxController {
     try {
       await firestore
           .collection("Users")
+          
           .doc(auth.currentUser!.uid)
           .collection('cartItems')
           .doc(item.productId)

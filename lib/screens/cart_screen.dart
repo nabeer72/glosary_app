@@ -1,44 +1,14 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:portoflio/Models/grocery_model.dart';
+import 'package:portoflio/services/card_controller.dart';
 import 'package:portoflio/widgets/cart_widget.dart';
 import 'package:portoflio/widgets/custom_loader.dart';
 import 'package:portoflio/widgets/primary_button.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class CartScreen extends StatelessWidget {
+  CartScreen({super.key});
 
-  @override
-  State<CartScreen> createState() => _CartScreenState();
-}
-
-class _CartScreenState extends State<CartScreen> {
-  var firestore = FirebaseFirestore.instance;
-  var auth = FirebaseAuth.instance;
-  Stream<List<Items>> getCartItems() {
-    return firestore
-        .collection('Users')
-        .doc(auth.currentUser!.uid)
-        .collection("cartItems")
-        .snapshots()
-        .map((snapshot) =>
-            snapshot.docs.map((doc) => Items.fromMap(doc.data())).toList());
-  }
-
-  Future<void> deleteCartItem(String productId) async {
-    try {
-      await firestore
-          .collection("Users")
-          .doc(auth.currentUser!.uid)
-          .collection('cartItems')
-          .doc(productId)
-          .delete();
-    } catch (e) {
-      debugPrint(e.toString());
-    }
-  }
+  final CartController controller = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +16,9 @@ class _CartScreenState extends State<CartScreen> {
       appBar: AppBar(
         leading: InkWell(
           onTap: () => Get.back(),
-          child: Icon(Icons.arrow_back_ios),
+          child: const Icon(Icons.arrow_back_ios),
         ),
-        title: Text("Product Detail"),
+        title: const Text("Cart"),
         centerTitle: true,
       ),
       bottomNavigationBar: Padding(
@@ -58,39 +28,35 @@ class _CartScreenState extends State<CartScreen> {
       ),
       body: SafeArea(
         child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: StreamBuilder(
-                stream: getCartItems(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CustomLoader(),
-                    );
-                  }
-                  if (snapshot.hasError) {
-                    return Center(
-                      child: Text("Error: ${snapshot.error}"),
-                    );
-                  }
-                  if (snapshot.data == null || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Text("No items in cart"),
-                    );
-                  }
-                  final cartItems = snapshot.data!;
-                  return ListView.builder(
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (context, index) {
-                        var item = cartItems[index];
-                        return CartWidget(
-                          items: item,
-                          onDelete: () {
-                            deleteCartItem(item.productId);
-                          
-                          },
-                        );
-                      });
-                })),
+          padding: const EdgeInsets.all(16.0),
+          child: Obx(() {
+            if (controller.isLoading.value) {
+              return const Center(child: CustomLoader());
+            }
+            if (controller.error.isNotEmpty) {
+              return Center(
+                child: Text("Error: ${controller.error.value}"),
+              );
+            }
+            if (controller.cartItems.isEmpty) {
+              return const Center(
+                child: Text("No items in cart"),
+              );
+            }
+            return ListView.builder(
+              itemCount: controller.cartItems.length,
+              itemBuilder: (context, index) {
+                var item = controller.cartItems[index];
+                return CartWidget(
+                  items: item,
+                  onDelete: () {
+                    controller.deleteCartItem(item.productId);
+                  },
+                );
+              },
+            );
+          }),
+        ),
       ),
     );
   }
