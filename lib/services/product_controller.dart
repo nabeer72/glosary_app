@@ -121,12 +121,10 @@ class ProductDetailController extends GetxController {
     }
   }
 
-  // Increase quantity
   void increaseQuantity() {
     quantity++;
   }
 
-  // Decrease quantity (min 1)
   void decreaseQuantity() {
     if (quantity > 1) {
       quantity--;
